@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { JWT_KEY } = require("../utils/config");
 noteRoute.get("/", async (req, res, next) => {
   try {
-    const blog = await Blog.findOne().populate("user");
+    const blog = await Blog.find({});
     res.json(blog);
   } catch (err) {
     next(err);
