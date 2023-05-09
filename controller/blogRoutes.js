@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { JWT_KEY } = require("../utils/config");
 noteRoute.get("/", async (req, res, next) => {
   try {
-    const blog = await Blog.find({});
+    const blog = await Blog.find({}).populate('user','name');
     res.json(blog);
   } catch (err) {
     next(err);
@@ -47,11 +47,13 @@ noteRoute.delete("/:id", async (req, res, next) => {
   let userData = req.user
   // const userToken = req.token;
   // let tokenVerifyResult = jwt.verify(userToken, JWT_KEY);
-  console.log(userData.id)
   if (!userData) {
     res.status(401).json({ error: "Token is Invalid" });
   }
+
+
   try {
+    console.log(userData.id)
     let blogData = await Blog.findById(id);
     console.log(blogData)
     if (blogData.user.toString() === userData.id) {
