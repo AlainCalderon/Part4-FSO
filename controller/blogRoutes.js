@@ -1,11 +1,8 @@
 const noteRoute = require("express").Router();
 const Blog = require("../models/blog");
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
-const { JWT_KEY } = require("../utils/config");
 noteRoute.get("/", async (req, res, next) => {
   try {
-    const blog = await Blog.find({}).populate('user','name');
+    const blog = await Blog.find({}).populate("user", "name");
     res.json(blog);
   } catch (err) {
     next(err);
@@ -13,8 +10,7 @@ noteRoute.get("/", async (req, res, next) => {
 });
 
 noteRoute.post("/", async (req, res, next) => {
-
-  const user = req.user
+  const user = req.user;
   let { title, author, url, likes } = req.body;
   if (!title) {
     return res.status(400).send({ error: "Can't save blog with no title" });
@@ -26,7 +22,6 @@ noteRoute.post("/", async (req, res, next) => {
     return res.status(401).json({ error: "Token invalid" });
   }
   try {
-
     const blog = new Blog({
       title,
       author,
@@ -44,18 +39,17 @@ noteRoute.post("/", async (req, res, next) => {
 
 noteRoute.delete("/:id", async (req, res, next) => {
   let id = req.params.id;
-  let userData = req.user
+  let userData = req.user;
   // const userToken = req.token;
   // let tokenVerifyResult = jwt.verify(userToken, JWT_KEY);
   if (!userData) {
     res.status(401).json({ error: "Token is Invalid" });
   }
 
-
   try {
-    console.log(userData.id)
+    console.log(userData.id);
     let blogData = await Blog.findById(id);
-    console.log(blogData)
+    console.log(blogData);
     if (blogData.user.toString() === userData.id) {
       const deleteResult = await Blog.findByIdAndDelete(id);
       res.json(deleteResult);
